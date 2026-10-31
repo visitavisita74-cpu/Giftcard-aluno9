@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CoinVault — Recompensas</title>
+<style>
+:root{--bg:#0b1020;--panel:#141c32;--panel2:#1b2742;--text:#eef2ff;--muted:#a7b1ca;--line:#2b3858;--purple:#8b5cf6;--blue:#38bdf8;--green:#34d399;--red:#fb7185}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% 0%,#20214b 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input{font:inherit}button{border:0;border-radius:11px;padding:11px 15px;background:linear-gradient(100deg,var(--purple),#6366f1);color:white;font-weight:700;cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}.secondary{background:#263452;color:var(--text)}.danger{background:#7f1d35}.success{background:#087e68}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px max(20px,calc((100% - 1120px)/2));border-bottom:1px solid #ffffff16;background:#0b1020cc;position:sticky;top:0;backdrop-filter:blur(14px);z-index:2}
+.brand{font-size:20px;font-weight:900;letter-spacing:.4px}.brand span{color:#a78bfa}.wrap{max-width:1120px;margin:30px auto;padding:0 20px}.muted{color:var(--muted)}.hidden{display:none!important}
+.card{background:linear-gradient(145deg,#18223b,#11192c);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 15px 45px #0002}
+.auth{max-width:480px;margin:5vh auto}.tabs{display:flex;gap:8px;margin:18px 0}.tabs button{flex:1}.tabs .active{outline:2px solid #a78bfa}
+label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}input{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:10px;background:#0d1528;color:var(--text);outline:none}input:focus{border-color:var(--purple)}
+h1,h2,h3{line-height:1.2}h1{font-size:clamp(27px,5vw,42px);margin:0 0 8px}h2{font-size:22px;margin:0 0 15px}h3{margin:0 0 7px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:20px 0}.stat{padding:17px;border-radius:15px;background:#1a2642;border:1px solid var(--line)}.stat strong{display:block;font-size:26px}.stat small{color:var(--muted)}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}.pill{display:inline-block;padding:4px 9px;border-radius:99px;background:#263452;color:#c4b5fd;font-size:12px;font-weight:700}.product{display:flex;flex-direction:column;gap:10px;min-height:190px}.product .emoji{font-size:34px}.product button{margin-top:auto}.product.off{opacity:.65}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row input{flex:1;min-width:130px}.notice{padding:12px 14px;border-radius:11px;background:#1e3150;color:#dbeafe;margin:12px 0}.warning{background:#422333;color:#fecdd3}.successbox{background:#123a35;color:#a7f3d0}.section{margin:24px 0}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:14px}.table th{color:var(--muted)}.table-wrap{overflow:auto}.small{font-size:12px}.right{margin-left:auto}
+footer{max-width:1120px;margin:35px auto;padding:0 20px 30px;color:#7f8ba8;font-size:12px}
+@media(max-width:600px){header{padding:14px 16px}.wrap{margin:20px auto;padding:0 14px}.card{padding:17px}.table th,.table td{padding:8px}}
+
+.mission-question{border:1px solid var(--line);border-radius:13px;padding:15px;margin:14px 0;background:#0e172b}
+.option-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px}
+.option-grid input{margin-top:5px}
+.mission-question select,.mission-question input[type=radio]{width:auto}
+.letter{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px;border:1px solid #7054b8;border-radius:14px;background:linear-gradient(120deg,#2a2050,#18223b);margin:10px 0}
+.letter-icon{font-size:30px}.letter button{white-space:nowrap}
+.confetti-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:99}
+.confetti-piece{position:absolute;top:-18px;width:9px;height:15px;animation:confetti-fall 2.8s ease-in forwards}
+@keyframes confetti-fall{to{transform:translateY(110vh) rotate(900deg);opacity:.1}}
+</style>
+</head>
+<body>
+<header><div class="brand">◈ <span>Coin</span>Vault</div><div id="headerRight" class="row"></div></header>
+<main class="wrap">
+<section id="authView" class="auth card">
+  <span class="pill">PLATAFORMA DE RECOMPENSAS</span>
+  <h1 style="margin-top:14px">Suas moedas.<br><span style="color:#a78bfa">Suas recompensas.</span></h1>
+  <p class="muted">Crie sua conta ou entre para acessar a loja de gift cards.</p>
+  <div class="tabs"><button id="tabRegister" class="active" type="button">Criar conta</button><button id="tabLogin" class="secondary" type="button">Entrar</button></div>
+  <form id="authForm">
+    <div id="nameField"><label for="username">Nome de usuário</label><input id="username" autocomplete="username" maxlength="24" required placeholder="Digite seu nome de usuário"></div>
+    
+    <label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" minlength="6" required placeholder="Mínimo de 6 caracteres">
+    <button id="authSubmit" style="width:100%;margin-top:18px" type="submit">Criar minha conta</button>
+  </form>
+  <div class="section" style="border-top:1px solid var(--line);padding-top:16px">
+    <h3>Área administrativa</h3><p class="muted small">A conta de administrador só pode ser criada uma vez neste navegador.</p>
+    <button id="adminSetupBtn" class="secondary" type="button">Criar conta de administrador</button>
+  </div>
+  <p id="authMessage" class="small muted" aria-live="polite"></p>
+  <div style="border-top:1px solid var(--line);padding-top:14px;margin-top:14px">
+    <button id="resetDemoBtn" class="danger secondary" type="button">Reiniciar demonstração e apagar contas</button>
+    <p class="small muted">Apaga todas as contas, moedas, solicitações e configurações salvas neste navegador para começar do zero.</p>
+  </div>
+</section>
+
+<section id="adminSetupView" class="auth card hidden">
+  <span class="pill">CONFIGURAÇÃO INICIAL</span><h2 style="margin-top:14px">Criar administrador</h2>
+  <p class="muted small">Esta opção desaparece depois que a primeira conta administrativa for criada neste navegador.</p>
+  <form id="adminSetupForm">
+    <label>Nome de usuário</label><input id="adminName" required maxlength="24">
+    
+    <label>Senha</label><input id="adminPassword" type="password" minlength="6" required>
+    <div class="row" style="margin-top:18px"><button type="submit">Criar administrador</button><button type="button" class="secondary" id="cancelSetup">Voltar</button></div>
+  </form><p id="setupMessage" class="small muted"></p>
+</section>
+
+<section id="appView" class="hidden">
+  <div class="topline"><div><span class="pill" id="rolePill">USUÁRIO</span><h1 id="welcome" style="margin-top:10px">Olá!</h1><p class="muted">Bem-vindo à sua central de recompensas.</p></div><button id="logoutBtn" class="secondary">Sair</button></div>
+  <div class="stats">
+    <div class="stat"><small>SEU SALDO</small><strong><span id="balance">0</span> 🪙</strong><small>Moedas disponíveis</small></div>
+    <div class="stat"><small>GIFT CARDS</small><strong id="availableCount">0</strong><small>Recompensas disponíveis</small></div>
+    <div class="stat"><small>CÓDIGO DE BOAS-VINDAS</small><strong id="promoRemaining">10</strong><small>Resgates restantes</small></div>
+  </div>
+  <section id="userArea">
+    <div class="card section">
+      <h2>Resgatar código promocional</h2><p class="muted">Os 10 primeiros usuários que utilizarem o código recebem 90 moedas.</p>
+      <div class="row"><input id="promoInput" placeholder="Digite o código promocional" maxlength="32"><button id="promoBtn">Resgatar código</button></div>
+      <p id="promoMessage" class="small muted" aria-live="polite"></p>
+    </div>
+    <div class="section"><div class="topline"><div><h2>Loja de gift cards</h2><p class="muted">Use suas moedas para solicitar uma recompensa.</p></div></div><div id="products" class="grid"></div></div>
+
+    <div class="card section" id="dailyMissionCard">
+      <div class="topline"><div><h2>Missão do dia</h2><p class="muted">Responda às perguntas criadas pelo administrador e conquiste moedas.</p></div><span class="pill" id="missionReward">0 moedas</span></div>
+      <div id="dailyMissionContent"><p class="muted">Ainda não há uma missão disponível. Aguarde a próxima missão do administrador.</p></div>
+    </div>
+
+    <div class="card section" id="giftInbox"><div class="topline"><div><h2>Cartinhas de presente 💌</h2><p class="muted">Abra uma cartinha enviada pelo administrador para receber suas moedas.</p></div><span class="pill" id="giftCount">0 novas</span></div><div id="myGifts"><p class="muted">Você ainda não recebeu presentes.</p></div></div>
+    <div class="card section"><h2>Meus resgates</h2><div id="myRedemptions" class="table-wrap"></div></div>
+  </section>
+  <section id="adminArea" class="hidden">
+    <div class="notice"><strong>Solicitações internas:</strong> os pedidos feitos pelos usuários aparecem nesta tela. Insira o código do gift card para entregá-lo diretamente na conta do usuário.</div>
+    <div class="card section" id="storeUnlockCard">
+      <div class="topline">
+        <div>
+          <h2>Disponibilidade da loja</h2>
+          <p class="muted" id="storeLockStatus">Verificando solicitações pendentes...</p>
+        </div>
+        <button id="unlockStoreBtn" class="success hidden" type="button">Liberar gift cards novamente</button>
+      </div>
+      <p class="small muted">Use esta opção quando quiser encerrar uma solicitação pendente e reabrir a loja. A solicitação será marcada como cancelada e as moedas serão devolvidas ao usuário.</p>
+    </div>
+    <div class="card section"><h2>Gerenciar gift cards</h2><p class="muted">Ative ou desative cada recompensa e defina o custo em moedas.</p><div id="adminProducts"></div></div>
+
+    <div class="card section">
+      <h2>Criar lição do dia</h2>
+      <p class="muted">A missão publicada ficará disponível para todos os usuários. Cada pessoa poderá concluí-la uma única vez. Depois de concluir, ela desaparecerá apenas daquela conta.</p>
+      <form id="missionForm">
+        <label for="missionTitle">Título da missão</label>
+        <input id="missionTitle" maxlength="90" required placeholder="Ex.: Desafio de operações matemáticas">
+        <label for="missionRewardInput">Recompensa em moedas</label>
+        <input id="missionRewardInput" type="number" min="1" max="100000" step="1" required value="5">
+        <div class="topline" style="margin-top:18px"><h3>Perguntas e opções</h3><button type="button" class="secondary" id="addMissionQuestion">+ Adicionar pergunta</button></div>
+        <div id="missionQuestions"></div>
+        <button type="submit" style="margin-top:12px">Publicar missão para todos</button>
+        <p id="missionAdminMessage" class="small muted" aria-live="polite"></p>
+      </form>
+      <div class="notice" id="missionAdminStatus">Nenhuma missão publicada.</div>
+    </div>
+
+    <div class="card section"><h2>Solicitações de resgate</h2><p class="muted">Registre o atendimento de cada solicitação. A entrega do gift card é feita manualmente pelo administrador.</p><div id="allRedemptions" class="table-wrap"></div></div>
+    <div class="card section"><h2>Controle do código promocional</h2><p class="muted">Código inicial: <strong id="promoCodeLabel">BEMVINDO90</strong>. Limite total: 10 usos; recompensa: 90 moedas por usuário.</p><div class="notice" id="promoAdminStatus"></div><button id="resetPromoBtn" class="danger">Reiniciar contador promocional</button><p class="small muted">Reiniciar o contador permite mais 10 usos. Use somente se quiser iniciar uma nova campanha.</p></div>
+    <div class="card section"><h2>Enviar presente 💌</h2><p class="muted">Escolha um usuário e a quantidade de moedas. O presente chegará como uma cartinha que ele poderá abrir uma única vez.</p>
+      <form id="giftForm"><label for="giftUser">Usuário destinatário</label><select id="giftUser" required style="width:100%;padding:12px;border-radius:10px;background:#0d1528;color:var(--text);border:1px solid var(--line)"></select>
+      <label for="giftAmount">Quantidade de moedas</label><input id="giftAmount" type="number" min="1" step="1" required placeholder="Ex.: 500">
+      <label for="giftMessage">Mensagem da cartinha (opcional)</label><input id="giftMessage" maxlength="180" placeholder="Ex.: Parabéns! Aproveite seu presente.">
+      <button type="submit" style="margin-top:14px">Enviar cartinha com moedas</button><p id="giftAdminMessage" class="small muted" aria-live="polite"></p></form>
+      <div class="section"><h3>Presentes enviados</h3><div id="sentGifts" class="table-wrap"></div></div>
+    </div>
+    <div class="card section"><h2>Contas cadastradas</h2><p class="muted">Você pode bloquear ou desbloquear o acesso de uma conta.</p><div id="usersTable" class="table-wrap"></div></div>
+  </section>
+</section>
+</main>
+<footer>CoinVault — demonstração local: contas, presentes e banimentos ficam salvos apenas neste navegador. Para uso real, implemente autenticação e banco de dados seguros no servidor.</footer>
+<script>
+(() => {
+const KEY='coinvault_demo_v2';
+const DEVICE_KEY='coinvault_user_account_lock_v1';
+const initialProducts=[
+ {id:'uber',name:'Uber',emoji:'🚕',cost:100,available:true},
+ {id:'xbox',name:'Xbox',emoji:'🎮',cost:150,available:true},
+ {id:'microsoft',name:'Microsoft',emoji:'🪟',cost:150,available:true},
+ {id:'roblox',name:'Roblox',emoji:'🧱',cost:100,available:true}
+];
+const $=id=>document.getElementById(id);
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||null}catch{return null}};
+let db=load()||{users:[],admin:null,products:initialProducts,promo:{code:'BEMVINDO90',limit:10,used:[]},redemptions:[],mission:null,session:null};
+if(!db.products)db.products=initialProducts;
+if(!db.promo)db.promo={code:'BEMVINDO90',limit:10,used:[]};
+if(!db.redemptions)db.redemptions=[];
+if(!Array.isArray(db.gifts))db.gifts=[];
+if(!Object.prototype.hasOwnProperty.call(db,'mission'))db.mission=null;
+// Migração: contas antigas passam a usar o nome como identificador.
+if(db.admin){db.admin.role='admin';db.admin.username=String(db.admin.username||db.admin.name||'').trim();}
+db.users=db.users.map(u=>({...u,role:'user',username:String(u.username||u.name||'').trim()}));
+db.redemptions=db.redemptions.map(r=>{const copy={...r};return copy;});
+// Se já havia uma conta neste navegador, ela ocupa o cadastro deste dispositivo.
+if(db.users.length && !localStorage.getItem(DEVICE_KEY))localStorage.setItem(DEVICE_KEY,db.users[0].id);
+if(db.session==='admin'&&!db.admin)db.session=null;
+if(typeof db.session==='string'&&db.session.startsWith('user:')&&!db.users.some(u=>u.id===db.session.slice(5)))db.session=null;
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function msg(id,text,cls=''){const el=$(id);el.textContent=text;el.className='small '+cls}
+function current(){if(db.session==='admin')return db.admin;if(db.session?.startsWith('user:'))return db.users.find(u=>u.id===db.session.slice(5));return null}
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function setAuthMode(login){$('nameField').classList.remove('hidden');$('tabRegister').classList.toggle('active',!login);$('tabLogin').classList.toggle('active',login);$('tabLogin').classList.toggle('secondary',!login);$('tabRegister').classList.toggle('secondary',login);$('authSubmit').textContent=login?'Entrar':'Criar minha conta';$('authForm').dataset.mode=login?'login':'register';msg('authMessage','')}
+$('tabRegister').onclick=()=>setAuthMode(false);$('tabLogin').onclick=()=>setAuthMode(true);
+$('adminSetupBtn').onclick=()=>{if(db.admin){msg('authMessage','A conta de administrador já foi criada.','warning');return}$('authView').classList.add('hidden');$('adminSetupView').classList.remove('hidden')};
+$('cancelSetup').onclick=()=>{$('adminSetupView').classList.add('hidden');$('authView').classList.remove('hidden')};
+function hash(text){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(16)}
+$('adminSetupForm').onsubmit=e=>{
+  e.preventDefault();
+  if(db.admin){msg('setupMessage','Já existe uma conta de administrador.','warning');return}
+  const name=$('adminName').value.trim(),username=name.toLowerCase(),pass=$('adminPassword').value;
+  if(!name||pass.length<6){msg('setupMessage','Informe um nome de usuário e uma senha com pelo menos 6 caracteres.','warning');return}
+  if(db.users.some(u=>String(u.username||u.name).toLowerCase()===username)){msg('setupMessage','Esse nome de usuário já pertence a uma conta. Escolha outro.','warning');return}
+  db.admin={id:'admin',name,username,pass:hash(pass),role:'admin'};
+  db.session='admin';save();$('adminSetupForm').reset();render();
+};
+$('authForm').onsubmit=e=>{
+  e.preventDefault();
+  const mode=$('authForm').dataset.mode||'register';
+  const username=$('username').value.trim();
+  const usernameKey=username.toLowerCase();
+  const pass=$('password').value;
+  if(!username||!pass){msg('authMessage','Informe o nome de usuário e a senha.','warning');return}
+  if(mode==='register'){
+    if(pass.length<6){msg('authMessage','A senha precisa ter pelo menos 6 caracteres.','warning');return}
+    if(db.users.some(u=>String(u.username||u.name).toLowerCase()===usernameKey)||String(db.admin?.username||db.admin?.name||'').toLowerCase()===usernameKey){msg('authMessage','Este nome de usuário já está cadastrado. Escolha outro.','warning');return}
+    if(localStorage.getItem(DEVICE_KEY)){msg('authMessage','Este navegador já foi usado para criar uma conta. Não é possível cadastrar outra conta aqui.','warning');return}
+    const id=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():('u'+Date.now()+Math.random().toString(16).slice(2));
+    const user={id,name:username,username,pass:hash(pass),coins:0,createdAt:new Date().toISOString(),role:'user'};
+    db.users.push(user);localStorage.setItem(DEVICE_KEY,id);
+    db.session='user:'+id;save();$('authForm').reset();render();return;
+  }
+  const admin=db.admin;
+  if(admin&&String(admin.username||admin.name).toLowerCase()===usernameKey&&admin.pass===hash(pass)){
+    db.session='admin';save();$('authForm').reset();render();return;
+  }
+  const user=db.users.find(u=>String(u.username||u.name).toLowerCase()===usernameKey&&u.pass===hash(pass));
+  if(!user){msg('authMessage','Nome de usuário ou senha incorretos. Confira os dados e tente novamente.','warning');return}
+  db.session='user:'+user.id;save();$('authForm').reset();render();
+};
+$('resetDemoBtn').onclick=()=>{
+  const ok=confirm('Tem certeza? Isso apagará todas as contas, moedas, solicitações, gift cards configurados e o administrador deste navegador.');
+  if(!ok)return;
+  localStorage.removeItem(KEY);
+  db={users:[],admin:null,products:initialProducts.map(p=>({...p})),promo:{code:'BEMVINDO90',limit:10,used:[]},redemptions:[],mission:null,session:null};
+  save();
+  $('adminSetupBtn').disabled=false;
+  setAuthMode(false);
+  render();
+  msg('authMessage','Demonstração reiniciada. Agora você pode criar uma nova conta de administrador.','success');
+};
+$('logoutBtn').onclick=()=>{db.session=null;save();render()};
+$('promoBtn').onclick=()=>{const u=current();if(!u||u.role==='admin')return;const code=$('promoInput').value.trim().toUpperCase();if(code!==db.promo.code){msg('promoMessage','Código inválido.','warning');return}if(db.promo.used.includes(u.id)){msg('promoMessage','Você já utilizou este código.','warning');return}if(db.promo.used.length>=db.promo.limit){msg('promoMessage','Este código promocional expirou.','warning');return}db.promo.used.push(u.id);u.coins+=90;save();$('promoInput').value='';msg('promoMessage','Código aceito! Você recebeu 90 moedas.','success');render()};
+function hasPendingRedemption(){return db.redemptions.some(r=>r.status==='Pendente')}
+function renderProducts(){const target=$('products');target.innerHTML='';const locked=hasPendingRedemption();if(locked){const notice=document.createElement('div');notice.className='notice warning';notice.textContent='Um gift card já foi solicitado e está aguardando atendimento do administrador. Todos os gift cards estão temporariamente indisponíveis até a solicitação ser concluída.';target.appendChild(notice)}db.products.forEach(p=>{const available=!!p.available&&!locked;const div=document.createElement('article');div.className='card product '+(!available?'off':'');div.innerHTML=`<div class="emoji">${p.emoji}</div><h3>${safe(p.name)}</h3><div class="muted">${p.cost} moedas</div><span class="pill">${available?'DISPONÍVEL':(locked?'RESERVA EM ANDAMENTO':'ESTOQUE ESGOTADO')}</span><button ${!available?'disabled':''} data-redeem="${p.id}">${available?'Solicitar resgate':'Indisponível'}</button>`;target.appendChild(div)});target.querySelectorAll('[data-redeem]').forEach(b=>b.onclick=()=>redeem(b.dataset.redeem));$('availableCount').textContent=locked?0:db.products.filter(p=>p.available).length}
+function redeem(id){
+  const u=current(),p=db.products.find(x=>x.id===id);
+  if(!u||!p||!p.available)return;
+  if(hasPendingRedemption()){alert('Outro resgate já está em andamento. Todos os gift cards ficarão indisponíveis até o administrador concluir essa solicitação.');render();return}
+  if(u.coins<p.cost){alert('Você não tem moedas suficientes.');return}
+  if(!confirm(`Solicitar ${p.name} por ${p.cost} moedas?`))return;
+  u.coins-=p.cost;
+  db.redemptions.unshift({
+    id:Date.now().toString(),
+    userId:u.id,
+    userName:u.name,
+    
+    product:p.name,
+    cost:p.cost,
+    status:'Pendente',
+    giftCode:'',
+    date:new Date().toLocaleString('pt-BR')
+  });
+  save();render();
+  alert('Solicitação enviada ao painel do administrador!');
+}
+function table(headers,rows){if(!rows.length)return '<p class="muted">Nenhum registro ainda.</p>';return `<table class="table"><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`}
+
+let missionQuestionCount=0;
+function addMissionQuestion(){
+  missionQuestionCount++;
+  const n=missionQuestionCount;
+  const box=document.createElement('div');
+  box.className='mission-question';
+  box.dataset.question=n;
+  box.innerHTML=`<div class="topline"><strong>Pergunta ${n}</strong><button type="button" class="danger" data-remove-question="${n}">Remover</button></div>
+    <label>Enunciado</label><input data-qtext="${n}" maxlength="500" required placeholder="Digite a pergunta de matemática">
+    <div class="option-grid">
+      ${[1,2,3,4].map(i=>`<div><label>Opção ${i}</label><input data-option="${i}" data-q="${n}" maxlength="220" required placeholder="Texto da opção ${i}"></div>`).join('')}
+    </div>
+    <label>Resposta correta</label><select data-correct="${n}" required>
+      <option value="0">Opção 1</option><option value="1">Opção 2</option><option value="2">Opção 3</option><option value="3">Opção 4</option>
+    </select>`;
+  $('missionQuestions').appendChild(box);
+  box.querySelector('[data-remove-question]').onclick=()=>box.remove();
+}
+function renderMissionAdmin(){
+  const m=db.mission;
+  if(!m){$('missionAdminStatus').textContent='Nenhuma missão publicada no momento.';return}
+  const completed=Array.isArray(m.completedBy)?m.completedBy.length:0;
+  $('missionAdminStatus').innerHTML=`<strong>Missão publicada:</strong> ${safe(m.title)} — ${m.reward} moedas. ${completed} usuário(s) já concluíram. Ao publicar outra missão, ela substituirá a atual para todos os usuários.`;
+}
+function renderDailyMission(u){
+  const m=db.mission;
+  const card=$('dailyMissionCard');
+  const target=$('dailyMissionContent');
+  card.classList.remove('hidden');
+  $('missionReward').textContent=m?`${m.reward} moedas`:'Sem missão';
+  if(!m){target.innerHTML='<p class="muted">Ainda não há uma missão disponível. Aguarde a próxima missão do administrador.</p>';return}
+  if(!Array.isArray(m.completedBy))m.completedBy=[];
+  if(m.completedBy.includes(u.id)){
+    card.classList.add('hidden');
+    return;
+  }
+  target.innerHTML=`<h3>${safe(m.title)}</h3><p class="muted">${m.questions.length} pergunta(s). Acerte todas para concluir e receber a recompensa.</p>
+    <form id="answerMissionForm">
+      ${m.questions.map((q,i)=>`<div class="mission-question"><strong>${i+1}. ${safe(q.text)}</strong>
+        <div style="margin-top:10px">${q.options.map((op,j)=>`<label style="display:flex;align-items:center;gap:9px;color:var(--text);font-size:14px"><input type="radio" name="mission-q-${i}" value="${j}" required style="width:auto">${safe(op)}</label>`).join('')}</div>
+      </div>`).join('')}
+      <button type="submit">Enviar respostas</button>
+      <p id="missionAnswerMessage" class="small muted" aria-live="polite"></p>
+    </form>`;
+  $('answerMissionForm').onsubmit=e=>{
+    e.preventDefault();
+    const answers=m.questions.map((q,i)=>{
+      const selected=document.querySelector(`input[name="mission-q-${i}"]:checked`);
+      return selected?Number(selected.value):-1;
+    });
+    if(answers.some((a,i)=>a!==m.questions[i].correct)){
+      msg('missionAnswerMessage','Ainda há respostas incorretas. Revise e tente novamente; suas moedas não serão descontadas.','warning');
+      return;
+    }
+    if(!m.completedBy.includes(u.id)){
+      m.completedBy.push(u.id);
+      u.coins+=Number(m.reward);
+      save();
+      render();
+      alert(`Parabéns! Você concluiu a missão e recebeu ${m.reward} moedas.`);
+    }
+  };
+}
+$('addMissionQuestion').onclick=addMissionQuestion;
+$('missionForm').onsubmit=e=>{
+  e.preventDefault();
+  const title=$('missionTitle').value.trim();
+  const reward=Number($('missionRewardInput').value);
+  const boxes=[...$('missionQuestions').querySelectorAll('.mission-question')];
+  if(!title||!Number.isInteger(reward)||reward<1||reward>100000){msg('missionAdminMessage','Informe um título e uma recompensa válida (de 1 a 100.000 moedas).','warning');return}
+  if(!boxes.length){msg('missionAdminMessage','Adicione pelo menos uma pergunta.','warning');return}
+  const questions=[];
+  for(let i=0;i<boxes.length;i++){
+    const box=boxes[i],n=box.dataset.question;
+    const textValue=box.querySelector(`[data-qtext="${n}"]`).value.trim();
+    const options=[1,2,3,4].map(j=>box.querySelector(`[data-option="${j}"][data-q="${n}"]`).value.trim());
+    const correct=Number(box.querySelector(`[data-correct="${n}"]`).value);
+    if(!textValue||options.some(x=>!x)){msg('missionAdminMessage',`Complete a pergunta ${i+1} e suas quatro opções.`,'warning');return}
+    if(new Set(options.map(x=>x.toLowerCase())).size!==4){msg('missionAdminMessage',`As quatro opções da pergunta ${i+1} precisam ser diferentes.`,'warning');return}
+    questions.push({text:textValue,options,correct});
+  }
+  const replace=!!db.mission;
+  if(replace&&!confirm('Publicar esta missão substituirá a missão atual para todos os usuários que ainda não a concluíram. Deseja continuar?'))return;
+  db.mission={id:(window.crypto&&crypto.randomUUID)?crypto.randomUUID():('m'+Date.now()),title,reward,questions,completedBy:[],createdAt:new Date().toISOString()};
+  save();
+  $('missionForm').reset();
+  $('missionQuestions').innerHTML='';
+  missionQuestionCount=0;
+  addMissionQuestion();
+  msg('missionAdminMessage','Missão publicada! Ela já está disponível para todos os usuários deste CoinVault.','success');
+  render();
+};
+
+function renderUser(u){
+  $('balance').textContent=u.coins;
+  $('promoRemaining').textContent=Math.max(0,db.promo.limit-db.promo.used.length);
+  renderProducts();
+  renderDailyMission(u);
+  const mine=db.redemptions.filter(r=>r.userId===u.id);
+  $('myRedemptions').innerHTML=table(['Recompensa','Custo','Status','Código do gift card','Data'],mine.map(r=>`<tr><td>${safe(r.product)}</td><td>${r.cost}</td><td>${safe(r.status)}</td><td>${r.giftCode?`<strong>${safe(r.giftCode)}</strong>`:'<span class="muted">Aguardando administrador</span>'}</td><td>${safe(r.date)}</td></tr>`))
+}
+function openGift(id){
+  const u=current(),g=db.gifts.find(x=>x.id===id&&x.userId===u?.id);
+  if(!u||!g||g.claimed)return;
+  g.claimed=true;u.coins+=Number(g.amount)||0;save();render();
+  const layer=document.createElement('div');layer.className='confetti-layer';document.body.appendChild(layer);
+  for(let i=0;i<100;i++){const piece=document.createElement('i');piece.className='confetti-piece';piece.style.left=Math.random()*100+'%';piece.style.background=['#a78bfa','#38bdf8','#34d399','#fbbf24','#fb7185'][i%5];piece.style.animationDelay=Math.random()*.8+'s';piece.style.transform=`rotate(${Math.random()*360}deg)`;layer.appendChild(piece)}
+  setTimeout(()=>layer.remove(),3500);
+  alert(`🎉 Presente aberto! Você recebeu ${g.amount} moedas!`);
+}
+function renderAdmin(){
+const pendingRedemptions=db.redemptions.filter(r=>r.status==='Pendente');
+const unlockBtn=$('unlockStoreBtn');
+const lockStatus=$('storeLockStatus');
+if(pendingRedemptions.length){
+  lockStatus.textContent=`A loja está bloqueada por ${pendingRedemptions.length} solicitação(ões) pendente(s).`;
+  unlockBtn.classList.remove('hidden');
+  unlockBtn.disabled=false;
+}else{
+  lockStatus.textContent='A loja está liberada. Não há solicitações pendentes.';
+  unlockBtn.classList.add('hidden');
+}
+unlockBtn.onclick=()=>{
+  const pending=db.redemptions.filter(r=>r.status==='Pendente');
+  if(!pending.length){render();return}
+  if(!confirm('Liberar a loja agora? As solicitações pendentes serão canceladas e as moedas serão devolvidas aos respectivos usuários.'))return;
+  pending.forEach(r=>{
+    const user=db.users.find(u=>u.id===r.userId);
+    if(user)user.coins+=Number(r.cost)||0;
+    r.status='Cancelado pelo administrador';
+  });
+  save();
+  render();
+  alert('Loja liberada! Os gift cards estão disponíveis novamente e as moedas das solicitações canceladas foram devolvidas.');
+};
+renderMissionAdmin(); if(!$('missionQuestions').children.length)addMissionQuestion(); $('balance').textContent='—';$('promoRemaining').textContent=Math.max(0,db.promo.limit-db.promo.used.length);$('adminProducts').innerHTML=db.products.map(p=>`<div class="row" style="padding:12px 0;border-bottom:1px solid var(--line)"><strong style="min-width:105px">${p.emoji} ${safe(p.name)}</strong><label style="margin:0;display:flex;align-items:center;gap:7px"><input type="checkbox" data-stock="${p.id}" ${p.available?'checked':''} style="width:auto"> Disponível</label><label style="margin:0;display:flex;align-items:center;gap:7px">Custo <input type="number" min="1" max="100000" data-cost="${p.id}" value="${p.cost}" style="width:90px"></label></div>`).join('');
+$('adminProducts').querySelectorAll('[data-stock]').forEach(el=>el.onchange=()=>{db.products.find(p=>p.id===el.dataset.stock).available=el.checked;save();render()});
+$('adminProducts').querySelectorAll('[data-cost]').forEach(el=>el.onchange=()=>{const n=Number(el.value);if(Number.isInteger(n)&&n>0){db.products.find(p=>p.id===el.dataset.cost).cost=n;save();render()}else alert('Informe um custo válido.')});
+$('allRedemptions').innerHTML=table(['Usuário','Gift card','Custo','Status','Código para entregar','Ação'],db.redemptions.map(r=>`<tr><td>${safe(r.userName)}</td><td>${safe(r.product)}</td><td>${r.cost}</td><td>${safe(r.status)}</td><td>${r.giftCode?`<strong>${safe(r.giftCode)}</strong>`:'<span class="muted">Não informado</span>'}</td><td><button class="secondary" data-code="${r.id}">${r.giftCode?'Alterar código':'Inserir código'}</button></td></tr>`));
+$('allRedemptions').querySelectorAll('[data-code]').forEach(b=>b.onclick=()=>{
+  const r=db.redemptions.find(x=>x.id===b.dataset.code);
+  const code=prompt(`Digite o código do gift card ${r.product} para ${r.userName}:`,r.giftCode||'');
+  if(code===null)return;
+  const clean=code.trim();
+  if(!clean){alert('O código não pode ficar vazio.');return}
+  r.giftCode=clean;
+  r.status='Código enviado';
+  save();render();
+  alert('Código disponibilizado na conta do usuário.');
+});
+$('promoAdminStatus').textContent=`${db.promo.used.length} de ${db.promo.limit} usos realizados. ${Math.max(0,db.promo.limit-db.promo.used.length)} restantes.`;
+$('usersTable').innerHTML=table(['Nome de usuário','Saldo','Status','Ação'],db.users.map(u=>`<tr><td>${safe(u.username||u.name)}</td><td>${u.coins} 🪙</td><td>${u.banned?'Banido':'Ativo'}</td><td><button class="${u.banned?'success':'danger'}" data-ban-user="${u.id}">${u.banned?'Desbanir':'Banir'}</button></td></tr>`));
+ $('usersTable').querySelectorAll('[data-ban-user]').forEach(b=>b.onclick=()=>{
+   const target=db.users.find(u=>u.id===b.dataset.banUser);if(!target)return;
+   const action=target.banned?'desbanir':'banir';
+   if(!confirm(`Tem certeza de que deseja ${action} ${target.username||target.name}?`))return;
+   target.banned=!target.banned;save();render();
+ });
+}
+$('resetPromoBtn').onclick=()=>{if(confirm('Reiniciar o limite de 10 usos? Usuários que já usaram poderão usar novamente.')){db.promo.used=[];save();render()}};
+function render(){let user=current();if(user&&user.role!=='admin'&&user.banned){db.session=null;save();user=null;msg('authMessage','Sua conta está banida. Entre em contato com o administrador.','warning')} $('authView').classList.toggle('hidden',!!user);$('adminSetupView').classList.add('hidden');$('appView').classList.toggle('hidden',!user);$('headerRight').innerHTML=user?`<span class="muted small">${safe(user.name)}</span>`:'';if(!user){$('adminSetupBtn').disabled=!!db.admin;return}$('welcome').textContent='Olá, '+user.name+'!';const admin=user.role==='admin';$('rolePill').textContent=admin?'ADMINISTRADOR':'USUÁRIO';$('userArea').classList.toggle('hidden',admin);$('adminArea').classList.toggle('hidden',!admin);if(admin)renderAdmin();else renderUser(user)}
+window.addEventListener('storage',e=>{if(e.key===KEY){const latest=load();if(latest){db=latest;render()}}});
+if(db.admin)$('adminSetupBtn').disabled=true;
+setAuthMode(false);render();save();
+})();
+</script>
+</body>
+</html>
